@@ -1,48 +1,36 @@
+import os
 from datetime import datetime
 
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+from jinja2 import Environment, FileSystemLoader
+from weasyprint import HTML
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 
-def gerar_pdf(dados_candidato: dict, texto_vaga: str, template: str, caminho_arquivo: str):
-    """Gera um PDF com base nos dados do candidato e análise da vaga"""
-    c = canvas.Canvas(caminho_arquivo, pagesize=A4)
-    width, height = A4
+def gerar_pdf_jinja(dados_candidato: dict, template_nome: str, caminho_arquivo: str):
+    """Gera PDF usando um template HTML e dados dinâmicos"""
+    template_html = env.get_template(template_nome)
 
-    y = height - 50
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, y, "Currículo Gerado para Vaga")
+    # monta contexto
+    contexto = {
+        "nome": dados_candidato.get("nome", ""),
+        "cargo": dados_candidato.get("cargo", ""),
+        "email": dados_candidato.get("email", ""),
+        "telefone": dados_candidato.get("telefone", ""),
+        "linkedin": dados_candidato.get("linkedin", ""),
+        "github": dados_candidato.get("github", ""),
+        "resumo_profissional": dados_candidato.get("resumo_profissional", ""),
+        "experiencias": dados_candidato.get("experiencias", []),
+        "formacoes": dados_candidato.get("formacoes", []),
+        "hard_skills": dados_candidato.get("hard_skills", []),
+        "soft_skills": dados_candidato.get("soft_skills", []),
+        "idiomas": dados_candidato.get("idiomas", []),
+        "gerado_em": datetime.now().strftime("%d/%m/%Y %H:%M")
+    }
 
-    y -= 30
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, f"Data: {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    html_renderizado = template_html.render(contexto)
 
-    y -= 30
-    c.drawString(50, y, f"Template selecionado: {template}")
-
-    y -= 50
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "Dados do Candidato:")
-
-    y -= 20
-    c.setFont("Helvetica", 12)
-    for chave, valor in dados_candidato.items():
-        c.drawString(60, y, f"{chave.capitalize()}: {valor}")
-        y -= 20
-
-    y -= 20
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "Descrição da Vaga:")
-
-    y -= 20
-    c.setFont("Helvetica", 10)
-    texto_linhas = texto_vaga.split('\n')
-    for linha in texto_linhas:
-        if y < 50:
-            c.showPage()
-            y = height - 50
-            c.setFont("Helvetica", 10)
-        c.drawString(60, y, linha.strip())
-        y -= 12
-
-    c.save()
+    HTML(string=html_renderizado).write_pdf(caminho_arquivo)
