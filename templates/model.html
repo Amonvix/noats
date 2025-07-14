@@ -1,85 +1,80 @@
 <!DOCTYPE html>
-<html lang="{{idioma}}">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <title>Currículo - {{nome}}</title>
 <style>
-    body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
-    header { text-align: center; margin-bottom: 30px; }
-    h1 { font-size: 28px; margin: 0; }
-    h2 { font-size: 20px; margin: 10px 0; color: #555; }
-    section { margin-bottom: 20px; }
-    .section-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; color: #444; }
-    ul { list-style: none; padding: 0; }
-    li { margin-bottom: 4px; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { background-color: #f0f0f0; width: 30%; padding: 20px; box-sizing: border-box; }
+    .main { flex: 1; padding: 20px; box-sizing: border-box; }
+
+    h1 { font-size: 24px; margin: 0; }
+    h2 { font-size: 14px; margin: 5px 0 20px 0; font-weight: normal; color: #777; }
+    .section-title { font-size: 16px; font-weight: bold; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { margin-bottom: 5px; }
+    .contact a { color: #333; text-decoration: none; display: block; margin-bottom: 5px; }
 </style>
 </head>
 <body>
+<div class="container">
 
-<header>
+<div class="sidebar">
     <h1>{{nome}}</h1>
     <h2>{{cargo}}</h2>
-    <p>Email: {{email}} | Tel: {{telefone}} | LinkedIn: <a href="{{linkedin}}">{{linkedin}}</a> | GitHub: <a href="{{github}}">{{github}}</a></p>
-</header>
 
-<section>
-    <div class="section-title">{{'Resumo Profissional' if idioma == 'pt' else 'Professional Summary'}}</div>
-    <p>{{resumo_profissional}}</p>
-</section>
+    <div class="section-title">Contato</div>
+    <div class="contact">
+        <a>Email: {{email}}</a>
+        <a>Telefone: {{telefone}}</a>
+        <a href="{{linkedin}}">LinkedIn</a>
+        <a href="{{github}}">GitHub</a>
+    </div>
 
-<section>
-    <div class="section-title">{{'Experiência Profissional' if idioma == 'pt' else 'Professional Experience'}}</div>
+    <div class="section-title">Formação</div>
     <ul>
-        {% for experiencia in experiencias %}
-        <li>
-            <strong>{{experiencia.cargo}}</strong> - {{experiencia.empresa}} ({{experiencia.periodo}})<br>
-            {{experiencia.descricao}}
-        </li>
-        {% endfor %}
-    </ul>
-</section>
-
-<section>
-    <div class="section-title">{{'Formação Acadêmica' if idioma == 'pt' else 'Academic Background'}}</div>
-    <ul>
-        {% for formacao in formacoes %}
+    {% for formacao in formacoes %}
         <li>{{formacao}}</li>
-        {% endfor %}
+    {% endfor %}
     </ul>
-</section>
 
-<section>
-    <div class="section-title">Hard Skills</div>
-    <ul>
-        {% for skill in hard_skills %}
-        <li>{{skill}}</li>
-        {% endfor %}
-    </ul>
-</section>
-
-<section>
     <div class="section-title">Soft Skills</div>
     <ul>
-        {% for skill in soft_skills %}
+    {% for skill in soft_skills %}
         <li>{{skill}}</li>
-        {% endfor %}
+    {% endfor %}
     </ul>
-</section>
 
-<section>
-    <div class="section-title">{{'Idiomas' if idioma == 'pt' else 'Languages'}}</div>
+    <div class="section-title">Hard Skills</div>
     <ul>
-        {% for idioma_txt in idiomas %}
-        <li>{{idioma_txt}}</li>
-        {% endfor %}
+    {% for skill in hard_skills %}
+        <li>{{skill}}</li>
+    {% endfor %}
     </ul>
-</section>
 
-<footer>
-    <p style="text-align:center; margin-top:30px; font-size:12px; color:#888;">
-    {{'Gerado automaticamente para vaga:' if idioma == 'pt' else 'Automatically generated for job:'}} {{vaga_url}}
+    <div class="section-title">Idiomas</div>
+    <ul>
+    {% for idioma_txt in idiomas %}
+        <li>{{idioma_txt}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="main">
+    <div class="section-title">Resumo Profissional</div>
+    <p>{{resumo_profissional}}</p>
+
+    <div class="section-title">Experiência Profissional</div>
+    {% for experiencia in experiencias %}
+    <p>
+        <strong>{{experiencia.periodo}} - {{experiencia.cargo}}</strong><br>
+        <em>{{experiencia.empresa}}</em><br>
+        {{experiencia.descricao}}
     </p>
-</footer>
+    {% endfor %}
+</div>
 
+</div>
 </body>
 </html>

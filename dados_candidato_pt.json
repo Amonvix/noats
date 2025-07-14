@@ -1,0 +1,43 @@
+{
+  "nome": "Daniel Alexandre Pedroso",
+  "cargo": "Analista de Incidentes | DevOps | Python Dev (Júnior)",
+  "email": "hspedroso@gmail.com",
+  "telefone": "+55 13 99805-8621",
+  "linkedin": "https://www.linkedin.com/in/daniel-amon-pedroso/",
+  "github": "https://github.com/Amonvix",
+  "resumo_profissional": "Profissional com mais de 20 anos de experiência em tecnologia, atualmente em transição para desenvolvimento de software. Reconhecido pela excelência em análise de incidentes, expertise em DevOps e ambientes de nuvem. Apaixonado por resolver problemas complexos de forma criativa e construir resiliência.",
+  "experiencias": [
+    {
+      "periodo": "2023 - Atual",
+      "cargo": "Analista de Incidentes",
+      "empresa": "NTT Data Brasil (projeto Ambev)",
+      "descricao": "Análise e tratamento de incidentes críticos em microservices. Desenvolvimento de scripts Python para correções em bancos NoSQL. Monitoramento com New Relic e Databricks."
+    },
+    {
+      "periodo": "2014 - 2023",
+      "cargo": "Consultor de Tecnologias Google",
+      "empresa": "SoftwareONE Brasil",
+      "descricao": "Arquitetura e execução de projetos de migração para Google Workspace. Treinamento de usuários e administração de ambientes em nuvem (AWS, GCP, Azure)."
+    }
+  ],
+  "formacoes": [
+    "Tecnólogo em Análise e Desenvolvimento de Sistemas — Estácio — 2023–2025"
+  ],
+  "hard_skills": [
+    "Monitoramento e Análise de Incidentes",
+    "Administração de Ambientes em Nuvem",
+    "DevOps e Contêineres",
+    "Python",
+    "Java"
+  ],
+  "soft_skills": [
+    "Comunicação clara",
+    "Pensamento lógico",
+    "Compartilhamento de conhecimento",
+    "Atenção a detalhes"
+  ],
+  "idiomas": [
+    "Português nativo",
+    "Inglês fluente"
+  ]
+}
