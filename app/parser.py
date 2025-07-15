@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import re
 from langdetect import detect
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def extrair_texto_bruto(html: str) -> str:
@@ -41,10 +44,20 @@ def detectar_pcd(texto: str) -> bool:
 
 
 def detectar_idioma(texto: str) -> str:
+    """
+    Detecta o idioma de um texto e retorna 'pt' para português
+    ou 'en' para inglês. Fallback para 'pt' se não identificado.
+    """
     try:
         lang = detect(texto)
-        if lang.startswith('en'):
+        if lang.startswith('pt'):
+            return 'pt'
+        elif lang.startswith('en'):
             return 'en'
-        return 'pt'
-    except Exception:
+        else:
+            logger.warning(
+                f"Idioma desconhecido detectado: {lang}, fallback para 'pt'")
+            return 'pt'
+    except Exception as e:
+        logger.error(f"Erro ao detectar idioma: {e}, fallback para 'pt'")
         return 'pt'

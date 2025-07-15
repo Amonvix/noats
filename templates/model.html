@@ -1,80 +1,80 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Currículo - {{nome}}</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
-    .container { display: flex; min-height: 100vh; }
-    .sidebar { background-color: #f0f0f0; width: 30%; padding: 20px; box-sizing: border-box; }
-    .main { flex: 1; padding: 20px; box-sizing: border-box; }
-
-    h1 { font-size: 24px; margin: 0; }
-    h2 { font-size: 14px; margin: 5px 0 20px 0; font-weight: normal; color: #777; }
-    .section-title { font-size: 16px; font-weight: bold; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { margin-bottom: 5px; }
-    .contact a { color: #333; text-decoration: none; display: block; margin-bottom: 5px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Currículo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            color: #333;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-top: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            color: #34495e;
+        }
+        .experiencia {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+            background-color: #f9f9f9;
+        }
+        .experiencia strong {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .empresa {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .periodo {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        p {
+            margin: 3px 0;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
+    <h1>{{ nome }}</h1>
+    <p><strong>{{ cargo }}</strong></p>
+    <p>{{ email }} | {{ telefone }}</p>
+    <p><a href="{{ linkedin }}">LinkedIn</a> | <a href="{{ github }}">GitHub</a></p>
 
-<div class="sidebar">
-    <h1>{{nome}}</h1>
-    <h2>{{cargo}}</h2>
+    <div class="section-title">Resumo Profissional</div>
+    <p>{{ resumo_profissional }}</p>
 
-    <div class="section-title">Contato</div>
-    <div class="contact">
-        <a>Email: {{email}}</a>
-        <a>Telefone: {{telefone}}</a>
-        <a href="{{linkedin}}">LinkedIn</a>
-        <a href="{{github}}">GitHub</a>
+    <div class="section-title">Experiências</div>
+    {% for exp in experiencias %}
+    <div class="experiencia">
+        <p><strong>{{ exp.cargo }}</strong> na <span class="empresa">{{ exp.empresa }}</span></p>
+        <p class="periodo">{{ exp.periodo }}</p>
+        <p>{{ exp.descricao }}</p>
     </div>
+    {% endfor %}
 
-    <div class="section-title">Formação</div>
-    <ul>
+    <div class="section-title">Formações</div>
     {% for formacao in formacoes %}
-        <li>{{formacao}}</li>
+    <p>{{ formacao }}</p>
     {% endfor %}
-    </ul>
-
-    <div class="section-title">Soft Skills</div>
-    <ul>
-    {% for skill in soft_skills %}
-        <li>{{skill}}</li>
-    {% endfor %}
-    </ul>
 
     <div class="section-title">Hard Skills</div>
-    <ul>
-    {% for skill in hard_skills %}
-        <li>{{skill}}</li>
-    {% endfor %}
-    </ul>
+    <p>{{ hard_skills | join(", ") }}</p>
+
+    <div class="section-title">Soft Skills</div>
+    <p>{{ soft_skills | join(", ") }}</p>
 
     <div class="section-title">Idiomas</div>
-    <ul>
-    {% for idioma_txt in idiomas %}
-        <li>{{idioma_txt}}</li>
-    {% endfor %}
-    </ul>
-</div>
+    <p>{{ idiomas | join(", ") }}</p>
 
-<div class="main">
-    <div class="section-title">Resumo Profissional</div>
-    <p>{{resumo_profissional}}</p>
-
-    <div class="section-title">Experiência Profissional</div>
-    {% for experiencia in experiencias %}
-    <p>
-        <strong>{{experiencia.periodo}} - {{experiencia.cargo}}</strong><br>
-        <em>{{experiencia.empresa}}</em><br>
-        {{experiencia.descricao}}
-    </p>
-    {% endfor %}
-</div>
-
-</div>
 </body>
 </html>

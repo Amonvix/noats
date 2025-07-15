@@ -3,9 +3,8 @@ import os
 import shutil
 
 import requests
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, UploadFile, Request
 from fastapi.responses import FileResponse, HTMLResponse
-from langdetect import detect
 
 from . import ats_booster, parser, pdf_generator
 from .logger import logger
@@ -28,17 +27,15 @@ def form_html():
     <h1>Gerador Inteligente de Currículo</h1>
     <form action="/gerar" enctype="multipart/form-data" method="post">
         <label>URL da vaga:</label><br>
-        <input type="text" name="vaga_url" style="width:400px"/><br><br>
+        <input type="text" name="vaga_url" style="width:400px" required/><br><br>
 
         <label>Upload do currículo base (PDF):</label><br>
-        <input type="file" name="curriculo_pdf"/><br><br>
+        <input type="file" name="curriculo_pdf" required/><br><br>
 
         <label>Idioma desejado:</label><br>
-        <select name="idioma">
-            <option value="">Detectar automaticamente</option>
-            <option value="pt">Português</option>
-            <option value="en">English</option>
-        </select><br><br>
+
+        <input type="radio" name="idioma" value="pt" checked/> Português<br>
+        <input type="radio" name="idioma" value="en"/> English<br><br>
 
         <button type="submit">Gerar Currículo</button>
     </form>
@@ -51,11 +48,31 @@ def form_html():
 async def gerar_curriculo(
     vaga_url: str = Form(...),
     curriculo_pdf: UploadFile = File(...),
-    idioma_form: str = Form(None)
+    idioma: str = Form('pt')
 ):
+
     try:
         logger.info(
-            f"Requisição recebida: URL={vaga_url}, Currículo={curriculo_pdf.filename}")
+            f"Requisição recebida: URL={vaga_url}, Currículo={curriculo_pdf.filename}, Idioma={idioma!r}")
+
+        # Garantir que o idioma foi informado
+        if idioma:
+            idioma = idioma.strip().lower()
+
+        if idioma == 'en':
+            idioma = 'en'
+        else:
+            idioma = 'pt'
+
+            logger.info(f"Idioma final selecionado: {idioma}")
+
+        idioma = idioma.strip().lower()
+        if idioma not in ['pt', 'en']:
+            logger.warning(
+                f"Idioma inválido recebido: {idioma!r}. Usando 'pt' como padrão.")
+            idioma = 'pt'
+
+        logger.info(f"Idioma final selecionado: {idioma}")
 
         # Salva PDF base temporário
         pdf_base_path = os.path.join(TMP_DIR, curriculo_pdf.filename)
@@ -71,9 +88,9 @@ async def gerar_curriculo(
         texto_bruto = parser.extrair_texto_bruto(html)
         texto_limpo = parser.limpar_texto(texto_bruto)
 
-        # Detecta idioma
-        idioma = idioma_form or parser.detectar_idioma(texto_limpo)
-        logger.info(f"Idioma detectado: {idioma}")
+        # Usa apenas idioma escolhido
+        idioma = idioma
+        logger.info(f"Idioma selecionado: {idioma}")
 
         # Carrega candidato no idioma certo
         json_path = f"dados_candidato_{idioma}.json"
@@ -89,16 +106,19 @@ async def gerar_curriculo(
 
         # Palavras-chave da vaga
         palavras_chave = ats_booster.extrair_palavras_chave(
-            texto_limpo, idioma=idioma)
+            texto_limpo, idioma=idioma
+        )
         candidato['hard_skills'] = ats_booster.reforcar_hardskills(
-            candidato.get('hard_skills', []), palavras_chave)
+            candidato.get('hard_skills', []), palavras_chave
+        )
 
         # Insere URL da vaga no contexto
         candidato['vaga_url'] = vaga_url
 
         # Nome do PDF final
         pdf_final_path = os.path.join(
-            TMP_DIR, f"curriculo_gerado_{template_nome}.pdf")
+            TMP_DIR, f"curriculo_gerado_{template_nome}.pdf"
+        )
 
         # Gera PDF
         pdf_generator.gerar_pdf_jinja(
@@ -110,7 +130,11 @@ async def gerar_curriculo(
         os.remove(pdf_base_path)
 
         logger.info(f"PDF gerado com sucesso: {pdf_final_path}")
-        return FileResponse(pdf_final_path, filename=f"Curriculo_Gerado_{template_nome}.pdf", media_type='application/pdf')
+        return FileResponse(
+            pdf_final_path,
+            filename=f"Curriculo_Gerado_{template_nome}.pdf",
+            media_type='application/pdf'
+        )
 
     except Exception as e:
         logger.error(f"Erro inesperado no processamento: {e}")
