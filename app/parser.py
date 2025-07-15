@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+from langdetect import detect
 
 
 def extrair_texto_bruto(html: str) -> str:
@@ -37,3 +38,13 @@ def detectar_pcd(texto: str) -> bool:
             return True
 
     return False
+
+
+def detectar_idioma(texto: str) -> str:
+    try:
+        lang = detect(texto)
+        if lang.startswith('en'):
+            return 'en'
+        return 'pt'
+    except Exception:
+        return 'pt'

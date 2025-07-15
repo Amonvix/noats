@@ -21,25 +21,38 @@ def form_html():
     logger.info("Página inicial acessada")
     return """
     <html>
-        <head>
-            <title>Gerador de Currículo</title>
-        </head>
-        <body>
-            <h1>Gerador Inteligente de Currículo</h1>
-            <form action="/gerar" enctype="multipart/form-data" method="post">
-                <label>URL da vaga:</label><br>
-                <input type="text" name="vaga_url" style="width:400px"/><br><br>
-                <label>Upload do currículo base (PDF):</label><br>
-                <input type="file" name="curriculo_pdf"/><br><br>
-                <button type="submit">Gerar Currículo</button>
-            </form>
-        </body>
-    </html>
+<head>
+    <title>Gerador de Currículo</title>
+</head>
+<body>
+    <h1>Gerador Inteligente de Currículo</h1>
+    <form action="/gerar" enctype="multipart/form-data" method="post">
+        <label>URL da vaga:</label><br>
+        <input type="text" name="vaga_url" style="width:400px"/><br><br>
+
+        <label>Upload do currículo base (PDF):</label><br>
+        <input type="file" name="curriculo_pdf"/><br><br>
+
+        <label>Idioma desejado:</label><br>
+        <select name="idioma">
+            <option value="">Detectar automaticamente</option>
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+        </select><br><br>
+
+        <button type="submit">Gerar Currículo</button>
+    </form>
+</body>
+</html>
     """
 
 
 @app.post("/gerar")
-async def gerar_curriculo(vaga_url: str = Form(...), curriculo_pdf: UploadFile = File(...)):
+async def gerar_curriculo(
+    vaga_url: str = Form(...),
+    curriculo_pdf: UploadFile = File(...),
+    idioma_form: str = Form(None)
+):
     try:
         logger.info(
             f"Requisição recebida: URL={vaga_url}, Currículo={curriculo_pdf.filename}")
@@ -59,7 +72,7 @@ async def gerar_curriculo(vaga_url: str = Form(...), curriculo_pdf: UploadFile =
         texto_limpo = parser.limpar_texto(texto_bruto)
 
         # Detecta idioma
-        idioma = parser.detectar_idioma(texto_limpo)
+        idioma = idioma_form or parser.detectar_idioma(texto_limpo)
         logger.info(f"Idioma detectado: {idioma}")
 
         # Carrega candidato no idioma certo

@@ -8,7 +8,7 @@
   "resumo_profissional": "Profissional com mais de 20 anos de experiência em tecnologia, atualmente em transição para desenvolvimento de software. Reconhecido pela excelência em análise de incidentes, expertise em DevOps e ambientes de nuvem. Apaixonado por resolver problemas complexos de forma criativa e construir resiliência.",
   "experiencias": [
     {
-      "periodo": "2023 - Atual",
+      "periodo": "2023 - 2024",
       "cargo": "Analista de Incidentes",
       "empresa": "NTT Data Brasil (projeto Ambev)",
       "descricao": "Análise e tratamento de incidentes críticos em microservices. Desenvolvimento de scripts Python para correções em bancos NoSQL. Monitoramento com New Relic e Databricks."
@@ -18,6 +18,12 @@
       "cargo": "Consultor de Tecnologias Google",
       "empresa": "SoftwareONE Brasil",
       "descricao": "Arquitetura e execução de projetos de migração para Google Workspace. Treinamento de usuários e administração de ambientes em nuvem (AWS, GCP, Azure)."
+    },
+    {
+      "periodo": "2013 - projeto de 4 meses",
+      "cargo": "Analista de Projetos",
+      "empresa": "NetHelp - Projeto Roche",
+      "descricao": "Participei de um dos maiores projetos de migração Google Apps do país, com impacto direto em 5.000 colaboradores da Roche Brasil."
     }
   ],
   "formacoes": [
