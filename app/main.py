@@ -22,23 +22,111 @@ def form_html():
     <html>
 <head>
     <title>Gerador de Currículo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #282a36;
+            color: #f8f8f2;
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            background-color: #44475a;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #6272a4;
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #bd93f9;
+            font-size: 26px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #f8f8f2;
+            font-size: 20px;
+        }
+        input[type=text],
+        input[type=file],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 20px;
+            background-color: #50fa7b;
+            color: #282a36;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8be9fd;
+        }
+        .radio-group {
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            body {
+                font-size: 18px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .container {
+                padding: 15px;
+            }
+            label {
+                font-size: 18px;
+            }
+            button {
+                font-size: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Gerador Inteligente de Currículo</h1>
-    <form action="/gerar" enctype="multipart/form-data" method="post">
-        <label>URL da vaga:</label><br>
-        <input type="text" name="vaga_url" style="width:400px" required/><br><br>
+    <div class="container">
+        <h1>Gerador Inteligente de Currículo</h1>
+        <form action="/gerar" enctype="multipart/form-data" method="post">
+            <label>URL da vaga:</label>
+            <input type="text" name="vaga_url"/>
 
-        <label>Upload do currículo base (PDF):</label><br>
-        <input type="file" name="curriculo_pdf" required/><br><br>
+            <label>Ou cole o conteúdo da vaga aqui (até 10.000 caracteres):</label>
+            <textarea name="vaga_texto" rows="10" maxlength="10000"></textarea>
 
-        <label>Idioma desejado:</label><br>
+            <label>Upload do currículo base (PDF):</label>
+            <input type="file" name="curriculo_pdf" required/>
 
-        <input type="radio" name="idioma" value="pt" checked/> Português<br>
-        <input type="radio" name="idioma" value="en"/> English<br><br>
+            <label>Idioma desejado:</label>
+            <div class="radio-group">
+                <input type="radio" name="idioma" value="pt" checked/> Português
+                <input type="radio" name="idioma" value="en"/> English
+            </div>
 
-        <button type="submit">Gerar Currículo</button>
-    </form>
+            <button type="submit">Gerar Currículo</button>
+        </form>
+    </div>
 </body>
 </html>
     """
@@ -46,50 +134,44 @@ def form_html():
 
 @app.post("/gerar")
 async def gerar_curriculo(
-    vaga_url: str = Form(...),
+    vaga_url: str = Form(""),
+    vaga_texto: str = Form(""),
     curriculo_pdf: UploadFile = File(...),
-    idioma: str = Form('pt')
+    idioma_form: str = Form(None)
 ):
-
     try:
         logger.info(
-            f"Requisição recebida: URL={vaga_url}, Currículo={curriculo_pdf.filename}, Idioma={idioma!r}")
+            f"Requisição recebida: URL={vaga_url!r}, Texto colado={bool(vaga_texto)}, Currículo={curriculo_pdf.filename}, Idioma_form={idioma_form!r}"
+        )
 
         # Garantir que o idioma foi informado
-        if idioma:
-            idioma = idioma.strip().lower()
-
-        if idioma == 'en':
-            idioma = 'en'
-        else:
-            idioma = 'pt'
-
-            logger.info(f"Idioma final selecionado: {idioma}")
-
-        idioma = idioma.strip().lower()
-        if idioma not in ['pt', 'en']:
+        if idioma_form not in ['pt', 'en']:
             logger.warning(
-                f"Idioma inválido recebido: {idioma!r}. Usando 'pt' como padrão.")
-            idioma = 'pt'
-
-        logger.info(f"Idioma final selecionado: {idioma}")
+                "Idioma não informado pelo formulário, usando 'pt' como padrão.")
+            idioma_form = 'pt'
 
         # Salva PDF base temporário
         pdf_base_path = os.path.join(TMP_DIR, curriculo_pdf.filename)
         with open(pdf_base_path, "wb") as buffer:
             shutil.copyfileobj(curriculo_pdf.file, buffer)
 
-        # Scraping da vaga
-        resp = requests.get(vaga_url)
-        resp.raise_for_status()
-        html = resp.text
-        logger.info(f"Scraping bem-sucedido da vaga: {vaga_url}")
-
-        texto_bruto = parser.extrair_texto_bruto(html)
-        texto_limpo = parser.limpar_texto(texto_bruto)
+        # Pega texto da vaga
+        if vaga_texto.strip():
+            logger.info("Usando texto colado no formulário.")
+            texto_limpo = parser.limpar_texto(vaga_texto)
+        else:
+            logger.info(f"Fazendo scraping da URL: {vaga_url}")
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+            }
+            resp = requests.get(vaga_url, headers=headers)
+            resp.raise_for_status()
+            html = resp.text
+            texto_bruto = parser.extrair_texto_bruto(html)
+            texto_limpo = parser.limpar_texto(texto_bruto)
 
         # Usa apenas idioma escolhido
-        idioma = idioma
+        idioma = idioma_form
         logger.info(f"Idioma selecionado: {idioma}")
 
         # Carrega candidato no idioma certo
@@ -112,7 +194,7 @@ async def gerar_curriculo(
             candidato.get('hard_skills', []), palavras_chave
         )
 
-        # Insere URL da vaga no contexto
+        # Insere URL da vaga no contexto, se tiver
         candidato['vaga_url'] = vaga_url
 
         # Nome do PDF final
