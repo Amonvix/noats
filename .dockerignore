@@ -1,0 +1,31 @@
+# Pastas desnecessárias
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambientes virtuais
+venv/
+.env/
+.env
+
+# Arquivos temporários
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Editor configs
+.idea/
+.vscode/
+*.code-workspace
+
+# Git
+.git/
+.gitignore
+
+# PDFs gerados
+tmp/
+*.pdf
