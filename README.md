@@ -1,58 +1,67 @@
-📄 Gerador Inteligente de Currículo
-Um app web leve e responsivo para gerar currículos inteligentes otimizados para aumentar as chances de um candidato ser selecionado para entrevista.
-A ideia não é burlar sistemas ATS, mas organizar as informações do candidato de forma estratégica, clara e adaptada à vaga desejada.
+# 📝 Gerador Inteligente de Currículo
 
-🚀 Como funciona?
-✅ Você fornece:
+Um app web **leve, responsivo e inteligente** para gerar currículos otimizados, aumentando suas chances de ser chamado para uma entrevista.
 
-A URL da vaga ou o texto completo da vaga.
+A ideia **não é burlar ATS**, mas organizar suas informações de forma estratégica, clara e adaptada à vaga desejada.
 
-Um arquivo PDF com seu currículo base.
+---
 
-O idioma desejado para o currículo (Português ou Inglês).
+## 🚀 Como funciona?
 
-✅ O sistema:
+✅ **Você fornece:**
 
-Analisa os requisitos da vaga.
+* A **URL da vaga** ou o **texto completo da vaga** (copiado e colado).
+* Um arquivo PDF com seu **currículo base**.
+* O **idioma desejado** para o currículo (Português ou Inglês).
 
-Ajusta as hard skills do currículo para destacar as mais relevantes.
+🤖 **O sistema:**
 
-Gera um PDF bem formatado, pronto para ser enviado.
+* Analisa os requisitos da vaga.
+* Ajusta as **hard skills** do currículo para destacar as mais relevantes.
+* Gera um PDF bem formatado e pronto para enviar.
 
-🌐 Deploy rápido no Fly.io
-Este projeto já foi pensado para rodar leve em ambientes como o Fly.io.
+---
 
-Pré-requisitos:
-Conta no Fly.io
+## 🌎 Deploy rápido no Fly.io
 
-Fly CLI instalado
+Este projeto já foi planejado para rodar **leve** em ambientes como o [Fly.io](https://fly.io).
 
-Rodando localmente:
-bash
-Copiar
-Editar
+### Pré-requisitos:
+
+* Conta no [Fly.io](https://fly.io)
+* [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/) instalado
+
+### Para rodar localmente:
+
+```bash
 docker build -t gerador-curriculo .
 docker run -p 8000:8000 gerador-curriculo
-Acesse em http://localhost:8000
+```
 
-Subindo no Fly:
-bash
-Copiar
-Editar
+Acesse: [http://localhost:8000](http://localhost:8000)
+
+### Para subir no Fly.io:
+
+```bash
 fly launch
 fly deploy
-🧾 Tecnologias usadas
-Python 3.10
+```
 
-FastAPI
+---
 
-Uvicorn
+## 🛠️ Tecnologias utilizadas
 
-WeasyPrint
+* [Python 3.10](https://www.python.org)
+* [FastAPI](https://fastapi.tiangolo.com)
+* [WeasyPrint](https://weasyprint.org)
+* [Jinja2](https://jinja.palletsprojects.com)
+* [Uvicorn](https://www.uvicorn.org)
+* [Docker](https://www.docker.com)
 
-Jinja2
+---
 
-Docker
+## 🎯 Objetivo
 
-🎯 Objetivo
-Este projeto foi criado para maximizar a possibilidade do candidato ser notado e convidado para uma conversa, apresentando suas competências alinhadas à vaga pretendida, sem práticas enganosas ou de manipulação indevida.
+> Este projeto foi criado para **maximizar a possibilidade do candidato ser notado e convidado para uma conversa**, apresentando suas competências alinhadas à vaga pretendida, **sem práticas enganosas ou manipulação indevida**.
+
+---
