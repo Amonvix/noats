@@ -1,9 +1,8 @@
-# fly.toml app configuration file generated for atsgenerator on 2025-07-17T20:20:23Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
+docker
+app = 'noats'
+=======
 app = 'atsgenerator'
+main
 primary_region = 'gig'
 
 [build]
@@ -20,4 +19,4 @@ primary_region = 'gig'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 1024
+
