@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-
+from .extrator import extrair_dados_curriculo
 import requests
 from fastapi import FastAPI, File, Form, UploadFile, Request
 from fastapi.responses import FileResponse, HTMLResponse
@@ -175,9 +175,7 @@ async def gerar_curriculo(
         logger.info(f"Idioma selecionado: {idioma}")
 
         # Carrega candidato no idioma certo
-        json_path = f"dados_candidato_{idioma}.json"
-        with open(json_path) as f:
-            candidato = json.load(f)
+        candidato = extrair_dados_curriculo(pdf_base_path)
 
         # Detecta PCD
         is_pcd = parser.detectar_pcd(texto_limpo)
