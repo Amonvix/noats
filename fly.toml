@@ -1,22 +1,54 @@
+
+
+app = 'noats'
+primary_region = 'gru'
+
+[experimental]
+  auto_rollback = true
+
 docker
 app = 'noats'
-=======
+
 app = 'atsgenerator'
 main
 primary_region = 'gig'
+main
 
 [build]
 
+[env]
+  PYTHONUNBUFFERED = '1'
+
 [http_service]
-  internal_port = 8000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
 
+refactor
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8080
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+[checks]
+  [checks.web]
+    port = 8080
+    type = "http"
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/"
+
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+main
 
