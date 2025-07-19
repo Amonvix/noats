@@ -1,22 +1,42 @@
-# fly.toml app configuration file generated for noats on 2025-07-17T17:44:12-03:00
+# fly.toml app configuration file generated for noats on 2025-07-19T17:16:38-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'noats'
-primary_region = 'gig'
+primary_region = 'gru'
+
+[experimental]
+  auto_rollback = true
 
 [build]
 
+[env]
+  PYTHONUNBUFFERED = '1'
+
 [http_service]
-  internal_port = 8000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
 
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8080
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+[checks]
+  [checks.web]
+    port = 8080
+    type = "http"
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/"
+
