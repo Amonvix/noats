@@ -1,13 +1,18 @@
-# fly.toml app configuration file generated for noats on 2025-07-19T17:16:38-03:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+
 
 app = 'noats'
 primary_region = 'gru'
 
 [experimental]
   auto_rollback = true
+
+docker
+app = 'noats'
+
+app = 'atsgenerator'
+main
+primary_region = 'gig'
+main
 
 [build]
 
@@ -22,6 +27,7 @@ primary_region = 'gru'
   min_machines_running = 0
   processes = ['app']
 
+refactor
 [[services]]
   protocol = 'tcp'
   internal_port = 8080
@@ -39,4 +45,10 @@ primary_region = 'gru'
     grace_period = "30s"
     method = "GET"
     path = "/"
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+main
 
