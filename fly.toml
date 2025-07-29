@@ -3,40 +3,25 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'noats'
-primary_region = 'gru'
-
-[experimental]
-  auto_rollback = true
-
-[build]
-
-[env]
-  PYTHONUNBUFFERED = '1'
+app = "noats" 
+primary_region = "gru"
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
 
-[[services]]
-  protocol = 'tcp'
-  internal_port = 8080
+[[http_service.checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "5s"
+    method = "get"
+    path = "/health" # Verifique se você tem essa rota no seu app Python
+    protocol = "http"
 
-  [[services.ports]]
-    port = 443
-    handlers = ['tls', 'http']
-
-[checks]
-  [checks.web]
-    port = 8080
-    type = "http"
-    interval = "30s"
-    timeout = "10s"
-    grace_period = "30s"
-    method = "GET"
-    path = "/"
-
+# Se você estiver usando um volume para o banco de dados, adicione esta seção
+# [mounts]
+#   source = "noats_data"
+#   destination = "/data"
